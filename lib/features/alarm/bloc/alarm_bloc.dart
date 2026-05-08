@@ -7,9 +7,13 @@ import '../../../core/utils/system_alarm_service.dart';
 
 class AlarmBloc extends Bloc<AlarmEvent, AlarmState> {
   final AlarmRepository repository;
-  final SystemAlarmService _systemAlarmService = SystemAlarmService();
+  final SystemAlarmService systemAlarmService;
 
-  AlarmBloc({required this.repository}) : super(AlarmInitial()) {
+  AlarmBloc({
+    required this.repository,
+    SystemAlarmService? systemAlarmService,
+  })  : systemAlarmService = systemAlarmService ?? SystemAlarmService(),
+        super(AlarmInitial()) {
     on<LoadAlarms>(_onLoadAlarms);
     on<AddAlarm>(_onAddAlarm);
     on<UpdateAlarm>(_onUpdateAlarm);
@@ -58,7 +62,7 @@ class AlarmBloc extends Bloc<AlarmEvent, AlarmState> {
       if (event.alarm.isActive) {
         await _scheduleSystemAlarm(event.alarm);
       } else {
-        await _systemAlarmService.cancelAlarm(event.alarm.id);
+        await systemAlarmService.cancelAlarm(event.alarm.id);
       }
 
       emit(AlarmLoaded(updatedAlarms));
@@ -75,7 +79,7 @@ class AlarmBloc extends Bloc<AlarmEvent, AlarmState> {
           .where((a) => a.id != event.alarmId)
           .toList();
       await repository.saveAlarms(updatedAlarms);
-      await _systemAlarmService.cancelAlarm(event.alarmId);
+      await systemAlarmService.cancelAlarm(event.alarmId);
       emit(AlarmLoaded(updatedAlarms));
     }
   }
@@ -101,7 +105,7 @@ class AlarmBloc extends Bloc<AlarmEvent, AlarmState> {
         if (toggledAlarm!.isActive) {
           await _scheduleSystemAlarm(toggledAlarm!);
         } else {
-          await _systemAlarmService.cancelAlarm(toggledAlarm!.id);
+          await systemAlarmService.cancelAlarm(toggledAlarm!.id);
         }
       }
 
@@ -127,7 +131,7 @@ class AlarmBloc extends Bloc<AlarmEvent, AlarmState> {
       scheduledTime = scheduledTime.add(const Duration(days: 1));
     }
 
-    await _systemAlarmService.setAlarm(
+    await systemAlarmService.setAlarm(
       alarm.id,
       scheduledTime,
       alarm.repeatDays,

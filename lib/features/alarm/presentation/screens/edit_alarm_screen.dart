@@ -5,6 +5,9 @@ import 'package:mechanix_clock/core/theme/app_theme.dart';
 import 'package:mechanix_clock/features/alarm/bloc/alarm_bloc.dart';
 import 'package:mechanix_clock/features/alarm/bloc/alarm_event.dart';
 import 'package:mechanix_clock/features/alarm/data/models/alarm_model.dart';
+import 'package:mechanix_clock/features/alarm/presentation/screens/sound_selection_screen.dart';
+import 'package:mechanix_clock/features/alarm/presentation/widgets/am_pm_picker.dart';
+import 'package:mechanix_clock/features/alarm/presentation/widgets/time_picker_column.dart';
 import '../widgets/custom_switch.dart';
 
 class EditAlarmScreen extends StatefulWidget {
@@ -98,7 +101,10 @@ class _EditAlarmScreenState extends State<EditAlarmScreen> {
               }
             },
           ),
-          _buildSnoozeRow(),
+          _SnoozeRow(
+            initialValue: _isSnoozeEnabled,
+            onChanged: (v) => _isSnoozeEnabled = v,
+          ),
           const Spacer(),
           _buildBottomBar(),
         ],
@@ -108,300 +114,31 @@ class _EditAlarmScreenState extends State<EditAlarmScreen> {
 
   Widget _buildTimePicker() {
     return SizedBox(
-      height: 220, // 87 selected + 2*(35px approx per dim item row)
+      height: 220,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          _buildPickerColumn(
+          PickerColumn(
             itemCount: 12,
-            selectedValue: _selectedHour,
-            onSelectedItemChanged: (v) => setState(() => _selectedHour = v + 1),
+            initialValue: _selectedHour,
             isHour: true,
             width: 150,
+            onChanged: (v) => _selectedHour = v,
           ),
           const SizedBox(width: 10),
-          _buildPickerColumn(
+          PickerColumn(
             itemCount: 60,
-            selectedValue: _selectedMinute,
-            onSelectedItemChanged: (v) => setState(() => _selectedMinute = v),
+            initialValue: _selectedMinute,
             isHour: false,
             width: 139,
+            onChanged: (v) => _selectedMinute = v,
           ),
           const SizedBox(width: 10),
-          _buildAmPmPicker(),
+          AmPmPicker(initialIsAm: _isAm, onChanged: (v) => _isAm = v),
         ],
       ),
     );
   }
-
-  Widget _buildPickerColumn({
-    required int itemCount,
-    required int selectedValue,
-    required ValueChanged<int> onSelectedItemChanged,
-    required bool isHour,
-    required double width,
-  }) {
-    // itemExtent for selected = 87, but we need smaller extents for dim items.
-    // CupertinoPicker uses uniform itemExtent, so we set it to accommodate
-    // the large selected text. Items above/below naturally overflow the Stack.
-    const double itemExtent = 87.0;
-
-    return SizedBox(
-      width: width,
-      height: 220,
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          // Full-height picker — overflows above and below the border box
-          CupertinoPicker(
-            itemExtent: itemExtent,
-            scrollController: FixedExtentScrollController(
-              initialItem: isHour ? selectedValue - 1 : selectedValue,
-            ),
-            onSelectedItemChanged: onSelectedItemChanged,
-            selectionOverlay: const SizedBox.shrink(), // hide default overlay
-            squeeze: 1.0,
-            looping: true,
-            children: List.generate(itemCount, (index) {
-              final value = isHour ? index + 1 : index;
-              final isSelected = isHour
-                  ? value == selectedValue
-                  : value == selectedValue;
-
-              return _buildPickerItem(
-                label: value.toString().padLeft(2, '0'),
-                isSelected: isSelected,
-              );
-            }),
-          ),
-
-          // Border box overlay — sits centered, 87px tall, full width
-          Positioned(
-            top: (220 - 87) / 2, // center vertically = 66.5
-            left: 0,
-            right: 0,
-            child: IgnorePointer(
-              child: Container(
-                height: 87,
-                decoration: BoxDecoration(
-                  border: Border.all(color: const Color(0xFF2D2D2D), width: 1),
-                  color: Colors.transparent,
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildPickerItem({required String label, required bool isSelected}) {
-    return Center(
-      child: Text(
-        label,
-        style: TextStyle(
-          fontFamily: 'Sora',
-          fontSize: isSelected ? 60.0 : 20.0,
-          fontWeight: isSelected ? FontWeight.w400 : FontWeight.w300,
-          color: isSelected ? const Color(0xFFDDDDDD) : const Color(0xFF717171),
-          height: 1.2,
-        ),
-      ),
-    );
-  }
-
-  Widget _buildAmPmPicker() {
-    return SizedBox(
-      width: 116,
-      height: 220,
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          CupertinoPicker(
-            itemExtent: 87,
-            scrollController: FixedExtentScrollController(
-              initialItem: _isAm ? 0 : 1,
-            ),
-            onSelectedItemChanged: (v) => setState(() => _isAm = v == 0),
-            selectionOverlay: const SizedBox.shrink(),
-            looping: false,
-            children: [
-              _buildAmPmItem(label: 'AM', isSelected: _isAm),
-              _buildAmPmItem(label: 'PM', isSelected: !_isAm),
-            ],
-          ),
-
-          // Border overlay centered on selected item
-          Positioned(
-            top: (220 - 87) / 2,
-            left: 0,
-            right: 0,
-            child: IgnorePointer(
-              child: Container(
-                height: 87,
-                decoration: BoxDecoration(
-                  border: Border.all(color: const Color(0xFF2D2D2D), width: 1),
-                  color: Colors.transparent,
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildAmPmItem({required String label, required bool isSelected}) {
-    return Center(
-      child: Text(
-        label,
-        style: TextStyle(
-          fontFamily: 'Sora',
-          fontSize: isSelected ? 40.0 : 20.0,
-          fontWeight: isSelected ? FontWeight.w400 : FontWeight.w300,
-          color: isSelected ? const Color(0xFFDDDDDD) : const Color(0xFF717171),
-          height: 1.2,
-        ),
-      ),
-    );
-  }
-  // Widget _buildTimePicker() {
-  //   return SizedBox(
-  //     height: 220,
-  //     child: Row(
-  //       mainAxisAlignment: MainAxisAlignment.center,
-  //       children: [
-  //         _buildPickerColumn(
-  //           itemCount: 12,
-  //           selectedValue: _selectedHour,
-  //           onSelectedItemChanged: (v) => setState(() => _selectedHour = v + 1),
-  //           isHour: true,
-  //           width: 150,
-  //         ),
-  //         const SizedBox(width: 10),
-  //         _buildPickerColumn(
-  //           itemCount: 60,
-  //           selectedValue: _selectedMinute,
-  //           onSelectedItemChanged: (v) => setState(() => _selectedMinute = v),
-  //           isHour: false,
-  //           width: 139,
-  //         ),
-  //         const SizedBox(width: 10),
-  //         _buildAmPmPicker(),
-  //       ],
-  //     ),
-  //   );
-  // }
-
-  // Widget _buildPickerColumn({
-  //   required int itemCount,
-  //   required int selectedValue,
-  //   required ValueChanged<int> onSelectedItemChanged,
-  //   required bool isHour,
-  //   required double width,
-  // }) {
-  //   return Container(
-  //     width: width,
-  //     height: 87,
-  //     decoration: BoxDecoration(
-  //       color: const Color(0xFF000000),
-  //       border: Border.all(color: const Color(0xFF2D2D2D)),
-  //     ),
-  //     child: CupertinoPicker(
-  //       itemExtent: 87,
-  //       scrollController: FixedExtentScrollController(
-  //         initialItem: isHour ? selectedValue - 1 : selectedValue,
-  //       ),
-  //       onSelectedItemChanged: onSelectedItemChanged,
-  //       selectionOverlay: const SizedBox.shrink(), // Remove default overlay
-  //       children: List.generate(itemCount, (index) {
-  //         final value = isHour ? index + 1 : index;
-  //         final isSelected = isHour
-  //             ? value == selectedHourAdjusted(selectedValue)
-  //             : value == selectedValue;
-
-  //         // Distance-based styling matching Figma
-  //         final int distance =
-  //             (value - (isHour ? selectedValue : selectedValue)).abs();
-
-  //         final Color textColor;
-  //         final double fontSize;
-
-  //         if (isSelected) {
-  //           textColor = const Color(0xFFDDDDDD); // Selected
-  //           fontSize = 60;
-  //         } else if (distance == 1) {
-  //           textColor = const Color(0xFF717171); // Adjacent
-  //           fontSize = 20;
-  //         } else {
-  //           textColor = const Color(0xFF212121); // Far away
-  //           fontSize = 20;
-  //         }
-
-  //         return Center(
-  //           child: Text(
-  //             value.toString().padLeft(2, '0'),
-  //             style: TextStyle(
-  //               fontFamily: 'Sora',
-  //               fontSize: fontSize,
-  //               fontWeight: isSelected ? FontWeight.w400 : FontWeight.w300,
-  //               color: textColor,
-  //             ),
-  //           ),
-  //         );
-  //       }),
-  //     ),
-  //   );
-  // }
-
-  // int selectedHourAdjusted(int hour) => hour;
-
-  // Widget _buildAmPmPicker() {
-  //   return Container(
-  //     width: 116,
-  //     height: 87,
-  //     decoration: BoxDecoration(
-  //       color: const Color(0xFF000000),
-  //       border: Border.all(color: const Color(0xFF2D2D2D)),
-  //     ),
-  //     child: CupertinoPicker(
-  //       itemExtent: 87,
-  //       scrollController: FixedExtentScrollController(
-  //         initialItem: _isAm ? 0 : 1,
-  //       ),
-  //       selectionOverlay: const SizedBox.shrink(),
-  //       onSelectedItemChanged: (v) => setState(() => _isAm = v == 0),
-  //       children: [
-  //         Center(
-  //           child: Text(
-  //             'AM',
-  //             style: TextStyle(
-  //               fontFamily: 'Sora',
-  //               fontSize: _isAm ? 40 : 20,
-  //               fontWeight: _isAm ? FontWeight.w400 : FontWeight.w300,
-  //               color: _isAm
-  //                   ? const Color(0xFFDDDDDD)
-  //                   : const Color(0xFF717171),
-  //             ),
-  //           ),
-  //         ),
-  //         Center(
-  //           child: Text(
-  //             'PM',
-  //             style: TextStyle(
-  //               fontFamily: 'Sora',
-  //               fontSize: !_isAm ? 40 : 20,
-  //               fontWeight: !_isAm ? FontWeight.w400 : FontWeight.w300,
-  //               color: !_isAm
-  //                   ? const Color(0xFFDDDDDD)
-  //                   : const Color(0xFF717171),
-  //             ),
-  //           ),
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
 
   Widget _buildOptionRow(
     String title,
@@ -409,6 +146,7 @@ class _EditAlarmScreenState extends State<EditAlarmScreen> {
     required VoidCallback onTap,
   }) {
     return InkWell(
+      key: Key('option_${title.toLowerCase()}'),
       onTap: onTap,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
@@ -438,22 +176,6 @@ class _EditAlarmScreenState extends State<EditAlarmScreen> {
     );
   }
 
-  Widget _buildSnoozeRow() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text('Snooze', style: Theme.of(context).textTheme.titleLarge),
-          CustomSwitch(
-            value: _isSnoozeEnabled,
-            onChanged: (v) => setState(() => _isSnoozeEnabled = v),
-          ),
-        ],
-      ),
-    );
-  }
-
   Widget _buildBottomBar() {
     return Container(
       height: 60,
@@ -467,6 +189,7 @@ class _EditAlarmScreenState extends State<EditAlarmScreen> {
         children: [
           if (widget.alarm != null)
             IconButton(
+              key: const Key('delete_alarm_button'),
               icon: const Icon(Icons.delete_outline, color: AppColors.textDim),
               onPressed: () {
                 context.read<AlarmBloc>().add(DeleteAlarm(widget.alarm!.id));
@@ -476,6 +199,7 @@ class _EditAlarmScreenState extends State<EditAlarmScreen> {
           else
             const SizedBox(width: 44),
           IconButton(
+            key: const Key('save_alarm_button'),
             icon: const Icon(Icons.check, color: AppColors.textPrimary),
             onPressed: () {
               final alarm = Alarm(
@@ -544,6 +268,7 @@ class _RepeatSelectionScreenState extends State<RepeatSelectionScreen> {
         itemBuilder: (context, index) {
           final isSelected = _selectedDays.contains(index);
           return ListTile(
+            key: Key('day_$index'),
             title: Text(_days[index]),
             leading: Icon(
               isSelected ? Icons.check_circle : Icons.radio_button_unchecked,
@@ -567,6 +292,7 @@ class _RepeatSelectionScreenState extends State<RepeatSelectionScreen> {
         color: AppColors.surface,
         child: Center(
           child: IconButton(
+            key: const Key('repeat_done_button'),
             icon: const Icon(Icons.check),
             onPressed: () => Navigator.pop(context, _selectedDays),
           ),
@@ -576,66 +302,41 @@ class _RepeatSelectionScreenState extends State<RepeatSelectionScreen> {
   }
 }
 
-class SoundSelectionScreen extends StatefulWidget {
-  final String initialSound;
-  const SoundSelectionScreen({super.key, required this.initialSound});
+class _SnoozeRow extends StatefulWidget {
+  final bool initialValue;
+  final ValueChanged<bool> onChanged;
+
+  const _SnoozeRow({required this.initialValue, required this.onChanged});
 
   @override
-  State<SoundSelectionScreen> createState() => _SoundSelectionScreenState();
+  State<_SnoozeRow> createState() => _SnoozeRowState();
 }
 
-class _SoundSelectionScreenState extends State<SoundSelectionScreen> {
-  late String _selectedSound;
-  final List<String> _sounds = [
-    'Wakeup',
-    'Siren',
-    'Chasing Stars - Beyond the Horizon',
-    'Dancing Flames (Urban Pulse)',
-    'Silent Echo - Reflections of Time (Time mus...)',
-    'Lost in Dreams - The Sound of Silence',
-  ];
+class _SnoozeRowState extends State<_SnoozeRow> {
+  late bool _isSnoozeEnabled;
 
   @override
   void initState() {
     super.initState();
-    _selectedSound = widget.initialSound;
+    _isSnoozeEnabled = widget.initialValue;
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Sound'),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios),
-          onPressed: () => Navigator.pop(context),
-        ),
-      ),
-      body: ListView.builder(
-        itemCount: _sounds.length,
-        itemBuilder: (context, index) {
-          final isSelected = _selectedSound == _sounds[index];
-          return ListTile(
-            title: Text(_sounds[index]),
-            leading: Icon(
-              isSelected ? Icons.check_circle : Icons.radio_button_unchecked,
-              color: AppColors.textPrimary,
-            ),
-            onTap: () {
-              setState(() => _selectedSound = _sounds[index]);
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text('Snooze', style: Theme.of(context).textTheme.titleLarge),
+          CustomSwitch(
+            value: _isSnoozeEnabled,
+            onChanged: (v) {
+              setState(() => _isSnoozeEnabled = v);
+              widget.onChanged(v); // notify parent without rebuilding it
             },
-          );
-        },
-      ),
-      bottomNavigationBar: Container(
-        height: 60,
-        color: AppColors.surface,
-        child: Center(
-          child: IconButton(
-            icon: const Icon(Icons.check),
-            onPressed: () => Navigator.pop(context, _selectedSound),
           ),
-        ),
+        ],
       ),
     );
   }

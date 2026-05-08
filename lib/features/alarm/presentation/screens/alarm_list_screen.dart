@@ -37,6 +37,7 @@ class _AlarmListScreenState extends State<AlarmListScreen> {
         ),
         actions: [
           IconButton(
+            key: const Key('edit_mode_button'),
             icon: Icon(
               _isEditing ? Icons.check : Icons.edit_outlined,
               color: AppColors.textPrimary,
@@ -48,6 +49,7 @@ class _AlarmListScreenState extends State<AlarmListScreen> {
             },
           ),
           IconButton(
+            key: const Key('add_alarm_button'),
             icon: const Icon(
               Icons.add_box_outlined,
               color: AppColors.textPrimary,
@@ -119,6 +121,7 @@ class _AlarmItem extends StatelessWidget {
           ],
           Expanded(
             child: GestureDetector(
+              key: const Key('alarm_item_tap'),
               onTap: () {
                 Navigator.push(
                   context,
@@ -168,6 +171,7 @@ class _AlarmItem extends StatelessWidget {
                     )
                   else
                     Row(
+                      key: const Key('alarm_repeat_days'),
                       children: List.generate(7, (index) {
                         final days = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
                         final bool isSelected = alarm.repeatDays.contains(

@@ -10,6 +10,7 @@ class CustomSwitch extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
+      key: const Key('custom_switch'),
       onTap: () => onChanged(!value),
       child: Container(
         width: 78,

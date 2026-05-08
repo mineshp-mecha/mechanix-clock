@@ -1,0 +1,109 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+
+class PickerColumn extends StatefulWidget {
+  final int itemCount;
+  final int initialValue;
+  final bool isHour;
+  final double width;
+  final ValueChanged<int> onChanged; // plain callback, no setState in parent
+
+  const PickerColumn({
+    required this.itemCount,
+    required this.initialValue,
+    required this.isHour,
+    required this.width,
+    required this.onChanged,
+  });
+
+  @override
+  State<PickerColumn> createState() => PickerColumnState();
+}
+
+class PickerColumnState extends State<PickerColumn> {
+  late final FixedExtentScrollController _controller;
+  late final ValueNotifier<int> _selectedIndex;
+
+  @override
+  void initState() {
+    super.initState();
+    final initial = widget.isHour
+        ? widget.initialValue - 1
+        : widget.initialValue;
+    _controller = FixedExtentScrollController(initialItem: initial);
+    _selectedIndex = ValueNotifier(initial);
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    _selectedIndex.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: widget.width,
+      height: 220,
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          CupertinoPicker(
+            itemExtent: 87,
+            scrollController: _controller,
+            selectionOverlay: const SizedBox.shrink(),
+            squeeze: 1.0,
+            looping: true,
+            onSelectedItemChanged: (index) {
+              _selectedIndex.value =
+                  index; // only notifies ValueListenableBuilder
+              final value = widget.isHour ? index + 1 : index;
+              widget.onChanged(value); // plain assignment in parent
+            },
+            children: List.generate(widget.itemCount, (index) {
+              final label = (widget.isHour ? index + 1 : index)
+                  .toString()
+                  .padLeft(2, '0');
+              return ValueListenableBuilder<int>(
+                valueListenable: _selectedIndex,
+                builder: (_, selected, __) {
+                  final isSelected = index == selected;
+                  return Center(
+                    child: Text(
+                      label,
+                      style: TextStyle(
+                        fontFamily: 'Sora',
+                        fontSize: isSelected ? 60.0 : 20.0,
+                        fontWeight: isSelected
+                            ? FontWeight.w400
+                            : FontWeight.w300,
+                        color: isSelected
+                            ? const Color(0xFFDDDDDD)
+                            : const Color(0xFF717171),
+                        height: 1.2,
+                      ),
+                    ),
+                  );
+                },
+              );
+            }),
+          ),
+          Positioned(
+            top: (220 - 87) / 2,
+            left: 0,
+            right: 0,
+            child: IgnorePointer(
+              child: Container(
+                height: 87,
+                decoration: BoxDecoration(
+                  border: Border.all(color: const Color(0xFF2D2D2D), width: 1),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
