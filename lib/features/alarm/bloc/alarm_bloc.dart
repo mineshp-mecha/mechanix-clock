@@ -54,13 +54,13 @@ class AlarmBloc extends Bloc<AlarmEvent, AlarmState> {
         return a.id == event.alarm.id ? event.alarm : a;
       }).toList();
       await repository.saveAlarms(updatedAlarms);
-      
+
       if (event.alarm.isActive) {
         await _scheduleSystemAlarm(event.alarm);
       } else {
         await _systemAlarmService.cancelAlarm(event.alarm.id);
       }
-      
+
       emit(AlarmLoaded(updatedAlarms));
     }
   }
@@ -94,9 +94,9 @@ class AlarmBloc extends Bloc<AlarmEvent, AlarmState> {
         }
         return a;
       }).toList();
-      
+
       await repository.saveAlarms(updatedAlarms);
-      
+
       if (toggledAlarm != null) {
         if (toggledAlarm!.isActive) {
           await _scheduleSystemAlarm(toggledAlarm!);
@@ -104,7 +104,7 @@ class AlarmBloc extends Bloc<AlarmEvent, AlarmState> {
           await _systemAlarmService.cancelAlarm(toggledAlarm!.id);
         }
       }
-      
+
       emit(AlarmLoaded(updatedAlarms));
     }
   }
@@ -127,6 +127,11 @@ class AlarmBloc extends Bloc<AlarmEvent, AlarmState> {
       scheduledTime = scheduledTime.add(const Duration(days: 1));
     }
 
-    await _systemAlarmService.setAlarm(alarm.id, scheduledTime);
+    await _systemAlarmService.setAlarm(
+      alarm.id,
+      scheduledTime,
+      alarm.repeatDays,
+      alarm.isSnoozeEnabled,
+    );
   }
 }

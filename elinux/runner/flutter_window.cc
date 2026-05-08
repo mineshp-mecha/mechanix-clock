@@ -21,13 +21,15 @@ FlutterWindow::FlutterWindow(
     const flutter::DartProject project)
     : view_properties_(view_properties), project_(project) {}
 
-bool FlutterWindow::OnCreate() {
+bool FlutterWindow::OnCreate()
+{
   flutter_view_controller_ = std::make_unique<flutter::FlutterViewController>(
       view_properties_, project_);
 
   // Ensure that basic setup of the controller was successful.
   if (!flutter_view_controller_->engine() ||
-      !flutter_view_controller_->view()) {
+      !flutter_view_controller_->view())
+  {
     return false;
   }
 
@@ -39,38 +41,88 @@ bool FlutterWindow::OnCreate() {
   return true;
 }
 
-void FlutterWindow::SetupAlarmChannel(flutter::BinaryMessenger* messenger) {
+void FlutterWindow::SetupAlarmChannel(flutter::BinaryMessenger *messenger)
+{
   auto channel = std::make_unique<flutter::MethodChannel<flutter::EncodableValue>>(
       messenger, "com.example.clock/alarm",
       &flutter::StandardMethodCodec::GetInstance());
 
-  channel->SetMethodCallHandler([](const auto& call, auto result) {
+  channel->SetMethodCallHandler([](const auto &call, auto result)
+                                {
     if (call.method_name() == "setAlarm") {
-      const auto* arguments =
-          std::get_if<flutter::EncodableMap>(call.arguments());
-      auto id = std::get<std::string>(
-          arguments->at(flutter::EncodableValue("id")));
-      auto timestamp = std::get<int64_t>(
-          arguments->at(flutter::EncodableValue("timestamp")));
+      const auto *arguments = std::get_if<flutter::EncodableMap>(call.arguments());
+      if (!arguments)
+      {
+        result->Error("bad_args", "Expected map");
+        return;
+      }
 
-      // Convert timestamp to human-readable format for systemd-run
-      // timestamp is in milliseconds
+      auto id_it = arguments->find(flutter::EncodableValue("id"));
+      auto ts_it = arguments->find(flutter::EncodableValue("timestamp"));
+      auto rd_it = arguments->find(flutter::EncodableValue("repeatDays"));
+      auto snooze_it = arguments->find(flutter::EncodableValue("isSnoozeEnabled"));
+      bool is_snooze_enabled = std::get<bool>(snooze_it->second);
+
+      std::cout << "IS SNOOZE ENABLED: " << is_snooze_enabled << std::endl;
+
+      if (id_it == arguments->end() || ts_it == arguments->end() || rd_it == arguments->end())
+      {
+        result->Error("missing_args", "Missing required arguments");
+        return;
+      }
+
+      std::string id = std::get<std::string>(id_it->second);
+      int64_t timestamp = std::get<int64_t>(ts_it->second);
+
+      // Correct way to handle EncodableList
+      std::vector<int> repeat_days;
+      if (const auto *list = std::get_if<flutter::EncodableList>(&rd_it->second))
+      {
+        for (const auto &item : *list)
+        {
+          if (const auto *val = std::get_if<int32_t>(&item))
+          {
+            repeat_days.push_back(*val);
+          }
+          else if (const auto *val_int64 = std::get_if<int64_t>(&item))
+          {
+            repeat_days.push_back(static_cast<int>(*val_int64));
+          }
+        }
+      }
+
+      // Convert timestamp to time parts
       std::time_t t = timestamp / 1000;
-      std::tm* tm = std::localtime(&t);
-      std::ostringstream oss;
-      oss << std::put_time(tm, "%Y-%m-%d %H:%M:%S");
-      std::string time_str = oss.str();
+      std::tm *tm = std::localtime(&t);
+      char time_buf[10];
+      std::strftime(time_buf, sizeof(time_buf), "%H:%M:%S", tm);
+      std::string hms = time_buf;
+      std::string calendar_spec;
+      if (repeat_days.empty())
+      {
+        char date_buf[20];
+        std::strftime(date_buf, sizeof(date_buf), "%Y-%m-%d %H:%M:%S", tm);
+        calendar_spec = date_buf;
+      }
+      else
+      {
+        std::string days_str = "";
+        const char *day_names[] = {"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"};
+        for (size_t i = 0; i < repeat_days.size(); ++i)
+        {
+          int day_idx = repeat_days[i];
+          if (day_idx >= 0 && day_idx < 7)
+          {
+            if (!days_str.empty())
+              days_str += ",";
+            days_str += day_names[day_idx];
+          }
+        }
+        calendar_spec = days_str + " *-*-* " + hms;
+      }
 
-      // Cancel existing alarm with same id first to avoid duplicates
-      std::string cancel_command = "systemctl --user stop alarm-" + id + ".timer 2>/dev/null";
-      system(cancel_command.c_str());
-
-      // schedule systemd-run timer
-      // We use --unit to give it a predictable name for cancellation
-      // The command triggers a notification and plays a sound
       std::string alarm_command =
-          "systemd-run --user --unit=alarm-" + id + " --on-calendar=\"" +
-          time_str +
+          "systemd-run --user --unit=alarm-" + id + " --on-calendar=\"" + calendar_spec +
           "\" /bin/bash -c \"/usr/bin/notify-send 'Alarm' 'Time to wake up!' --icon=alarm-clock && /usr/bin/aplay /usr/share/sounds/alsa/Front_Center.wav\"";
 
       std::cout << "Executing: " << alarm_command << std::endl;
@@ -87,27 +139,30 @@ void FlutterWindow::SetupAlarmChannel(flutter::BinaryMessenger* messenger) {
       auto id = std::get<std::string>(
           arguments->at(flutter::EncodableValue("id")));
 
-      std::string command = "systemctl --user stop alarm-" + id + ".timer";
+      std::string command = "systemctl --user stop alarm-" + id + ".timer || true";
       std::cout << "Executing: " << command << std::endl;
       system(command.c_str());
       result->Success();
     } else {
       result->NotImplemented();
-    }
-  });
+    } });
 }
 
-void FlutterWindow::OnDestroy() {
-  if (flutter_view_controller_) {
+void FlutterWindow::OnDestroy()
+{
+  if (flutter_view_controller_)
+  {
     flutter_view_controller_ = nullptr;
   }
 }
 
-void FlutterWindow::Run() {
+void FlutterWindow::Run()
+{
   // Main loop.
   auto next_flutter_event_time =
       std::chrono::steady_clock::time_point::clock::now();
-  while (flutter_view_controller_->view()->DispatchEvent()) {
+  while (flutter_view_controller_->view()->DispatchEvent())
+  {
     // Wait until the next event.
     {
       auto wait_duration =
@@ -123,12 +178,15 @@ void FlutterWindow::Run() {
     auto wait_duration = flutter_view_controller_->engine()->ProcessMessages();
     {
       auto next_event_time = std::chrono::steady_clock::time_point::max();
-      if (wait_duration != std::chrono::nanoseconds::max()) {
+      if (wait_duration != std::chrono::nanoseconds::max())
+      {
         next_event_time =
             std::min(next_event_time,
                      std::chrono::steady_clock::time_point::clock::now() +
                          wait_duration);
-      } else {
+      }
+      else
+      {
         // Wait for the next frame if no events.
         auto frame_rate = flutter_view_controller_->view()->GetFrameRate();
         next_event_time = std::min(

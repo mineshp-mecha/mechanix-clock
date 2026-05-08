@@ -3,12 +3,19 @@ import 'package:flutter/services.dart';
 class SystemAlarmService {
   static const _channel = MethodChannel('com.example.clock/alarm');
 
-  Future<void> setAlarm(String id, DateTime time) async {
+  Future<void> setAlarm(
+    String id,
+    DateTime time,
+    List<int> repeatDays,
+    bool isSnoozeEnabled,
+  ) async {
     try {
       final int timestamp = time.millisecondsSinceEpoch;
       await _channel.invokeMethod('setAlarm', {
         'id': id,
         'timestamp': timestamp,
+        'repeatDays': repeatDays,
+        'isSnoozeEnabled': isSnoozeEnabled,
       });
       print('SystemAlarmService: Alarm set for $time (ID: $id)');
     } on PlatformException catch (e) {
