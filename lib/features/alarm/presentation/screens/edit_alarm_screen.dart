@@ -158,9 +158,9 @@ class _EditAlarmScreenState extends State<EditAlarmScreen> {
               children: [
                 Text(
                   value,
-                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    color: AppColors.textLightGrey,
-                  ),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodyLarge?.copyWith(color: AppColors.textPrimary),
                 ),
                 const SizedBox(width: 8),
                 const Icon(

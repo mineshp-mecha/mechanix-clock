@@ -3,9 +3,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mechanix_clock/features/alarm/bloc/alarm_event.dart';
 import 'package:mechanix_clock/features/alarm/data/repository/alarm_repository.dart';
 import 'package:mechanix_clock/core/utils/system_alarm_service.dart';
+import 'package:mechanix_clock/l10n/app_localizations.dart';
 import 'core/theme/app_theme.dart';
 import 'features/alarm/bloc/alarm_bloc.dart';
-import 'features/alarm/presentation/screens/alarm_list_screen.dart';
+import 'features/stopwatch/bloc/stopwatch_bloc.dart';
+import 'features/navigation/presentation/screens/main_navigation_container.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -31,16 +33,24 @@ class MechanixClockApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => AlarmBloc(
-        repository: repository,
-        systemAlarmService: systemAlarmService,
-      )..add(LoadAlarms()),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => AlarmBloc(
+            repository: repository,
+            systemAlarmService: systemAlarmService,
+          )..add(LoadAlarms()),
+        ),
+        BlocProvider(create: (context) => StopwatchBloc()),
+      ],
       child: MaterialApp(
-        title: 'Mechanix Clock',
         debugShowCheckedModeBanner: false,
+        title: 'Mechanix Clock',
         theme: AppTheme.darkTheme,
-        home: const AlarmListScreen(),
+        locale: const Locale('en'),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: const MainNavigationContainer(),
       ),
     );
   }

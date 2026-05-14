@@ -46,7 +46,7 @@ class BottomNavBar extends StatelessWidget {
           icon,
           color: isSelected
               ? AppColors.textPrimary
-              : AppColors.textPrimary.withOpacity(0.5),
+              : AppColors.textPrimary.withValues(alpha: (0.5)),
         ),
       ),
     );

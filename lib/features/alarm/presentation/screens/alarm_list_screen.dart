@@ -6,7 +6,6 @@ import 'package:mechanix_clock/features/alarm/bloc/alarm_event.dart';
 import 'package:mechanix_clock/features/alarm/bloc/alarm_state.dart';
 import 'package:mechanix_clock/features/alarm/data/models/alarm_model.dart';
 import 'edit_alarm_screen.dart';
-import '../widgets/bottom_nav_bar.dart';
 import '../widgets/custom_switch.dart';
 
 class AlarmListScreen extends StatefulWidget {
@@ -86,7 +85,6 @@ class _AlarmListScreenState extends State<AlarmListScreen> {
           }
         },
       ),
-      bottomNavigationBar: BottomNavBar(currentIndex: 0, onTap: (index) {}),
     );
   }
 }

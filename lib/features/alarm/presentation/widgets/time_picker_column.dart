@@ -72,17 +72,9 @@ class PickerColumnState extends State<PickerColumn> {
                   return Center(
                     child: Text(
                       label,
-                      style: TextStyle(
-                        fontFamily: 'Sora',
-                        fontSize: isSelected ? 60.0 : 20.0,
-                        fontWeight: isSelected
-                            ? FontWeight.w400
-                            : FontWeight.w300,
-                        color: isSelected
-                            ? const Color(0xFFDDDDDD)
-                            : const Color(0xFF717171),
-                        height: 1.2,
-                      ),
+                      style: isSelected
+                          ? Theme.of(context).textTheme.displayLarge
+                          : Theme.of(context).textTheme.displaySmall,
                     ),
                   );
                 },
