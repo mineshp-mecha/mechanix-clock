@@ -106,47 +106,40 @@ class StopwatchScreen extends StatelessWidget {
               const Divider(color: Color(0xFF212121), height: 1, thickness: 1),
 
               // ── Buttons ────────────────────────────────────────────
-              SizedBox(
+              Container(
                 height: 72,
+                color: Colors.black,
+                padding: const EdgeInsets.symmetric(horizontal: 12),
                 child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     // Lap / Reset button
-                    Expanded(
-                      child: _StopwatchButton(
-                        label: state.status == StopwatchStatus.stopped
-                            ? 'Reset'
-                            : 'Lap',
-                        enabled: state.status != StopwatchStatus.initial,
-                        onTap: () {
-                          if (state.status == StopwatchStatus.stopped) {
-                            context.read<StopwatchBloc>().add(ResetStopwatch());
-                          } else if (state.status == StopwatchStatus.running) {
-                            context.read<StopwatchBloc>().add(LapStopwatch());
-                          }
-                        },
-                      ),
-                    ),
-                    // vertical divider between buttons
-                    const VerticalDivider(
-                      color: Color(0xFF474747),
-                      width: 1,
-                      thickness: 1,
+                    _StopwatchButton(
+                      label: state.status == StopwatchStatus.stopped
+                          ? 'Reset'
+                          : 'Lap',
+                      enabled: state.status != StopwatchStatus.initial,
+                      onTap: () {
+                        if (state.status == StopwatchStatus.stopped) {
+                          context.read<StopwatchBloc>().add(ResetStopwatch());
+                        } else if (state.status == StopwatchStatus.running) {
+                          context.read<StopwatchBloc>().add(LapStopwatch());
+                        }
+                      },
                     ),
                     // Start / Stop button
-                    Expanded(
-                      child: _StopwatchButton(
-                        label: state.status == StopwatchStatus.running
-                            ? 'Stop'
-                            : 'Start',
-                        enabled: true,
-                        onTap: () {
-                          if (state.status == StopwatchStatus.running) {
-                            context.read<StopwatchBloc>().add(StopStopwatch());
-                          } else {
-                            context.read<StopwatchBloc>().add(StartStopwatch());
-                          }
-                        },
-                      ),
+                    _StopwatchButton(
+                      label: state.status == StopwatchStatus.running
+                          ? 'Stop'
+                          : 'Start',
+                      enabled: true,
+                      onTap: () {
+                        if (state.status == StopwatchStatus.running) {
+                          context.read<StopwatchBloc>().add(StopStopwatch());
+                        } else {
+                          context.read<StopwatchBloc>().add(StartStopwatch());
+                        }
+                      },
                     ),
                   ],
                 ),
@@ -201,13 +194,25 @@ class _StopwatchButton extends StatelessWidget {
     return GestureDetector(
       onTap: enabled ? onTap : null,
       child: Container(
-        color: const Color(0xFF151515),
+        width: 180,
+        height: 48,
+        decoration: BoxDecoration(
+          color: const Color(0xFF151515),
+          border: Border.all(
+            color: enabled
+                ? const Color(0xFF474747)
+                : const Color(0xFF474747).withOpacity(0.4),
+            width: 1,
+          ),
+        ),
         alignment: Alignment.center,
         child: Text(
           label,
-          style: TextStyle(
-            fontSize: 20,
-            color: enabled ? const Color(0xFFDDDDDD) : const Color(0xFF474747),
+          style: Theme.of(context).textTheme.labelLarge!.copyWith(
+            height: 1.2,
+            color: enabled
+                ? const Color(0xFFADADAD)
+                : const Color(0xFFADADAD).withOpacity(0.4),
           ),
         ),
       ),
