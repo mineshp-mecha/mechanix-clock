@@ -59,7 +59,12 @@ class StopwatchScreen extends StatelessWidget {
               ),
 
               // ── Divider ────────────────────────────────────────────
-              const Divider(color: Color(0xFF212121), height: 1, thickness: 1),
+              if (state.laps.isNotEmpty)
+                const Divider(
+                  color: Color(0xFF212121),
+                  height: 1,
+                  thickness: 1,
+                ),
 
               // ── Lap list ───────────────────────────────────────────
               Expanded(

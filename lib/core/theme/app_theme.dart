@@ -20,6 +20,12 @@ class AppTheme {
       fontFamily: 'Sora',
       primaryColor: AppColors.accent,
       scaffoldBackgroundColor: AppColors.background,
+      appBarTheme: const AppBarTheme(backgroundColor: Colors.transparent, surfaceTintColor: Colors.transparent),
+      scrollbarTheme: const ScrollbarThemeData(
+        radius: Radius.circular(4),
+        thickness: WidgetStatePropertyAll(4),
+        thumbColor: WidgetStatePropertyAll(AppColors.textGrey),
+      ),
       textTheme: const TextTheme(
         displayLarge: TextStyle(
           fontSize: 60,
