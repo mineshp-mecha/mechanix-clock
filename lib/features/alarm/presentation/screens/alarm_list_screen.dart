@@ -37,6 +37,7 @@ class _AlarmListScreenState extends State<AlarmListScreen> {
         actions: [
           IconButton(
             key: const Key('edit_mode_button'),
+            padding: const EdgeInsets.all(10),
             icon: Icon(
               _isEditing ? Icons.check : Icons.edit_outlined,
               color: AppColors.textPrimary,
@@ -48,6 +49,7 @@ class _AlarmListScreenState extends State<AlarmListScreen> {
             },
           ),
           IconButton(
+            padding: const EdgeInsets.all(10),
             key: const Key('add_alarm_button'),
             icon: const Icon(
               Icons.add_box_outlined,
@@ -119,6 +121,7 @@ class _AlarmItem extends StatelessWidget {
           ],
           Expanded(
             child: GestureDetector(
+              behavior: HitTestBehavior.translucent,
               key: const Key('alarm_item_tap'),
               onTap: () {
                 Navigator.push(

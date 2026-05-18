@@ -70,7 +70,11 @@ class _SoundTile extends StatelessWidget {
   final String sound;
   final ValueNotifier<String> selectedNotifier;
 
-  const _SoundTile({super.key, required this.sound, required this.selectedNotifier});
+  const _SoundTile({
+    super.key,
+    required this.sound,
+    required this.selectedNotifier,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -78,7 +82,7 @@ class _SoundTile extends StatelessWidget {
       title: Text(sound),
       leading: ValueListenableBuilder<String>(
         valueListenable: selectedNotifier,
-        builder: (_, selected, __) => Icon(
+        builder: (_, selected, _) => Icon(
           selected == sound ? Icons.check_circle : Icons.radio_button_unchecked,
           color: AppColors.textPrimary,
         ),
