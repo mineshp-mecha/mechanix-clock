@@ -1,7 +1,144 @@
 {
+  "@@locale": "en",
   "alarms": "Alarms",
+  "@alarms": {
+    "description": "Title for the alarms screen"
+  },
   "stopwatch": "Stopwatch",
+  "@stopwatch": {
+    "description": "Title for the stopwatch screen"
+  },
   "lap": "Lap",
+  "@lap": {
+    "description": "Button text to record a stopwatch lap"
+  },
   "reset": "Reset",
-  "mechanix_clock": "Mechanix Clock"
+  "@reset": {
+    "description": "Button text to reset the stopwatch"
+  },
+  "mechanix_clock": "Mechanix Clock",
+  "@mechanix_clock": {
+    "description": "Application name"
+  },
+  "edit_alarms": "Edit Alarms",
+  "@edit_alarms": {
+    "description": "Title for editing alarms"
+  },
+  "no_alarms": "No Alarms",
+  "@no_alarms": {
+    "description": "Message displayed when there are no alarms"
+  },
+  "once": "Once",
+  "@once": {
+    "description": "Label indicating an alarm repeats only once"
+  },
+  "am": "AM",
+  "@am": {
+    "description": "Ante meridiem time indicator"
+  },
+  "pm": "PM",
+  "@pm": {
+    "description": "Post meridiem time indicator"
+  },
+  "set_alarm": "Set alarm",
+  "@set_alarm": {
+    "description": "Title for creating a new alarm"
+  },
+  "edit_alarm": "Edit alarm",
+  "@edit_alarm": {
+    "description": "Title for editing an existing alarm"
+  },
+  "repeat": "Repeat",
+  "@repeat": {
+    "description": "Label for alarm repeat settings"
+  },
+  "sound": "Sound",
+  "@sound": {
+    "description": "Label for alarm sound selection"
+  },
+  "snooze": "Snooze",
+  "@snooze": {
+    "description": "Label for alarm snooze setting"
+  },
+  "monday": "Monday",
+  "@monday": {
+    "description": "Full name of Monday"
+  },
+  "tuesday": "Tuesday",
+  "@tuesday": {
+    "description": "Full name of Tuesday"
+  },
+  "wednesday": "Wednesday",
+  "@wednesday": {
+    "description": "Full name of Wednesday"
+  },
+  "thursday": "Thursday",
+  "@thursday": {
+    "description": "Full name of Thursday"
+  },
+  "friday": "Friday",
+  "@friday": {
+    "description": "Full name of Friday"
+  },
+  "saturday": "Saturday",
+  "@saturday": {
+    "description": "Full name of Saturday"
+  },
+  "sunday": "Sunday",
+  "@sunday": {
+    "description": "Full name of Sunday"
+  },
+  "monday_abbr": "M",
+  "@monday_abbr": {
+    "description": "Abbreviated label for Monday"
+  },
+  "tuesday_abbr": "T",
+  "@tuesday_abbr": {
+    "description": "Abbreviated label for Tuesday"
+  },
+  "wednesday_abbr": "W",
+  "@wednesday_abbr": {
+    "description": "Abbreviated label for Wednesday"
+  },
+  "thursday_abbr": "T",
+  "@thursday_abbr": {
+    "description": "Abbreviated label for Thursday"
+  },
+  "friday_abbr": "F",
+  "@friday_abbr": {
+    "description": "Abbreviated label for Friday"
+  },
+  "saturday_abbr": "S",
+  "@saturday_abbr": {
+    "description": "Abbreviated label for Saturday"
+  },
+  "sunday_abbr": "S",
+  "@sunday_abbr": {
+    "description": "Abbreviated label for Sunday"
+  },
+  "lap_number": "Lap {number}",
+  "@lap_number": {
+    "description": "Label for a stopwatch lap with its sequence number",
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "stop": "Stop",
+  "@stop": {
+    "description": "Button text to stop the stopwatch"
+  },
+  "start": "Start",
+  "@start": {
+    "description": "Button text to start the stopwatch"
+  },
+  "timer_coming_soon": "Timer - Coming Soon",
+  "@timer_coming_soon": {
+    "description": "Placeholder message indicating the timer feature is not yet available"
+  },
+  "world_clock_coming_soon": "World Clock - Coming Soon",
+  "@world_clock_coming_soon": {
+    "description": "Placeholder message indicating the world clock feature is not yet available"
+  }
 }

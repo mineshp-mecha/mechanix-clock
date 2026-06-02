@@ -20,11 +20,36 @@ class AppTheme {
       fontFamily: 'Sora',
       primaryColor: AppColors.accent,
       scaffoldBackgroundColor: AppColors.background,
-      appBarTheme: const AppBarTheme(backgroundColor: Colors.transparent, surfaceTintColor: Colors.transparent),
+      splashFactory: NoSplash.splashFactory,
+      hoverColor: Colors.transparent,
+      highlightColor: Colors.white.withAlpha(25),
+      splashColor: Colors.white.withAlpha(25),
+      appBarTheme: const AppBarTheme(
+        backgroundColor: Colors.transparent,
+        surfaceTintColor: Colors.transparent,
+      ),
       scrollbarTheme: const ScrollbarThemeData(
         radius: Radius.circular(4),
         thickness: WidgetStatePropertyAll(4),
         thumbColor: WidgetStatePropertyAll(AppColors.textGrey),
+      ),
+      pageTransitionsTheme: const PageTransitionsTheme(
+        builders: {TargetPlatform.linux: CupertinoPageTransitionsBuilder()},
+      ),
+      iconButtonTheme: IconButtonThemeData(
+        style: ButtonStyle(
+          foregroundColor: const WidgetStatePropertyAll(AppColors.textPrimary),
+          overlayColor: WidgetStateProperty.resolveWith((states) {
+            if (states.contains(WidgetState.pressed)) {
+              return Colors.white.withAlpha(25);
+            }
+            if (states.contains(WidgetState.hovered)) {
+              return Colors.transparent;
+            }
+            return null;
+          }),
+          splashFactory: NoSplash.splashFactory,
+        ),
       ),
       textTheme: const TextTheme(
         displayLarge: TextStyle(
@@ -38,8 +63,8 @@ class AppTheme {
           color: AppColors.textPrimary,
         ),
         displaySmall: TextStyle(
-          fontSize: 20,
-          fontWeight: FontWeight.w300,
+          fontSize: 24,
+          fontWeight: FontWeight.w400,
           color: AppColors.textDim,
         ),
         headlineMedium: TextStyle(
