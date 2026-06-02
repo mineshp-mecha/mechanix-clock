@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mechanix_clock/core/utils/system_alarm_service.dart';
 import 'package:mechanix_clock/features/alarm/bloc/alarm_event.dart';
 import 'package:mechanix_clock/features/alarm/data/repository/alarm_repository.dart';
-import 'package:mechanix_clock/core/utils/system_alarm_service.dart';
 import 'package:mechanix_clock/l10n/app_localizations.dart';
+
 import 'core/theme/app_theme.dart';
 import 'features/alarm/bloc/alarm_bloc.dart';
-import 'features/stopwatch/bloc/stopwatch_bloc.dart';
 import 'features/navigation/presentation/screens/main_navigation_container.dart';
+import 'features/stopwatch/bloc/stopwatch_bloc.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mechanix_clock/core/theme/app_theme.dart';
+import 'package:mechanix_clock/l10n/app_localizations.dart';
 
 class SoundSelectionScreen extends StatefulWidget {
   final String initialSound;
@@ -35,9 +36,10 @@ class _SoundSelectionScreenState extends State<SoundSelectionScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Sound'),
+        title: Text(l10n.sound),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios),
           onPressed: () => Navigator.pop(context),

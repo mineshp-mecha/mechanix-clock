@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mechanix_clock/core/theme/app_theme.dart';
@@ -8,6 +7,8 @@ import 'package:mechanix_clock/features/alarm/data/models/alarm_model.dart';
 import 'package:mechanix_clock/features/alarm/presentation/screens/sound_selection_screen.dart';
 import 'package:mechanix_clock/features/alarm/presentation/widgets/am_pm_picker.dart';
 import 'package:mechanix_clock/features/alarm/presentation/widgets/time_picker_column.dart';
+import 'package:mechanix_clock/l10n/app_localizations.dart';
+
 import '../widgets/custom_switch.dart';
 
 class EditAlarmScreen extends StatefulWidget {
@@ -47,6 +48,17 @@ class _EditAlarmScreenState extends State<EditAlarmScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final List<String> dayAbbrs = [
+      l10n.monday_abbr,
+      l10n.tuesday_abbr,
+      l10n.wednesday_abbr,
+      l10n.thursday_abbr,
+      l10n.friday_abbr,
+      l10n.saturday_abbr,
+      l10n.sunday_abbr,
+    ];
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
@@ -56,7 +68,7 @@ class _EditAlarmScreenState extends State<EditAlarmScreen> {
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
-          widget.alarm == null ? 'Set alarm' : 'Edit alarm',
+          widget.alarm == null ? l10n.set_alarm : l10n.edit_alarm,
           style: Theme.of(context).textTheme.headlineMedium,
         ),
       ),
@@ -69,9 +81,7 @@ class _EditAlarmScreenState extends State<EditAlarmScreen> {
             'Repeat',
             _repeatDays.isEmpty
                 ? 'Once'
-                : _repeatDays
-                      .map((d) => ['M', 'T', 'W', 'T', 'F', 'S', 'S'][d])
-                      .join(' '),
+                : _repeatDays.map((d) => dayAbbrs[d]).join(' '),
             onTap: () async {
               final result = await Navigator.push<List<int>>(
                 context,
@@ -156,11 +166,17 @@ class _EditAlarmScreenState extends State<EditAlarmScreen> {
             Text(title, style: Theme.of(context).textTheme.titleLarge),
             Row(
               children: [
-                Text(
-                  value,
-                  style: Theme.of(
-                    context,
-                  ).textTheme.bodyLarge?.copyWith(color: AppColors.textPrimary),
+                SizedBox(
+                  width: 400,
+                  child: Text(
+                    value,
+                    textAlign: TextAlign.end,
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
+                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                      color: AppColors.textPrimary,
+                    ),
+                  ),
                 ),
                 const SizedBox(width: 8),
                 const Icon(
@@ -237,15 +253,6 @@ class RepeatSelectionScreen extends StatefulWidget {
 
 class _RepeatSelectionScreenState extends State<RepeatSelectionScreen> {
   late List<int> _selectedDays;
-  final List<String> _days = [
-    'Monday',
-    'Tuesday',
-    'Wednesday',
-    'Thursday',
-    'Friday',
-    'Saturday',
-    'Sunday',
-  ];
 
   @override
   void initState() {
@@ -255,9 +262,20 @@ class _RepeatSelectionScreenState extends State<RepeatSelectionScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final List<String> days = [
+      l10n.monday,
+      l10n.tuesday,
+      l10n.wednesday,
+      l10n.thursday,
+      l10n.friday,
+      l10n.saturday,
+      l10n.sunday,
+    ];
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Repeat'),
+        title: Text(l10n.repeat),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios),
           onPressed: () => Navigator.pop(context),
@@ -269,7 +287,7 @@ class _RepeatSelectionScreenState extends State<RepeatSelectionScreen> {
           final isSelected = _selectedDays.contains(index);
           return ListTile(
             key: Key('day_$index'),
-            title: Text(_days[index]),
+            title: Text(days[index]),
             leading: Icon(
               isSelected ? Icons.check_circle : Icons.radio_button_unchecked,
               color: AppColors.textPrimary,
@@ -323,20 +341,27 @@ class _SnoozeRowState extends State<_SnoozeRow> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text('Snooze', style: Theme.of(context).textTheme.titleLarge),
-          CustomSwitch(
-            value: _isSnoozeEnabled,
-            onChanged: (v) {
-              setState(() => _isSnoozeEnabled = v);
-              widget.onChanged(v); // notify parent without rebuilding it
-            },
-          ),
-        ],
+    final l10n = AppLocalizations.of(context)!;
+    return InkWell(
+      onTap: () {
+        setState(() => _isSnoozeEnabled = !_isSnoozeEnabled);
+        widget.onChanged(_isSnoozeEnabled);
+      },
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(l10n.snooze, style: Theme.of(context).textTheme.titleLarge),
+            CustomSwitch(
+              value: _isSnoozeEnabled,
+              onChanged: (v) {
+                setState(() => _isSnoozeEnabled = v);
+                widget.onChanged(v); // notify parent without rebuilding it
+              },
+            ),
+          ],
+        ),
       ),
     );
   }

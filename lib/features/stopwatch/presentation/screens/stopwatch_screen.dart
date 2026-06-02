@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mechanix_clock/features/stopwatch/bloc/stopwatch_bloc.dart';
 import 'package:mechanix_clock/features/stopwatch/bloc/stopwatch_event.dart';
 import 'package:mechanix_clock/features/stopwatch/bloc/stopwatch_state.dart';
+import 'package:mechanix_clock/l10n/app_localizations.dart';
 
 class StopwatchScreen extends StatelessWidget {
   const StopwatchScreen({super.key});
@@ -19,13 +20,14 @@ class StopwatchScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
         title: Text(
-          'Stopwatch',
+          l10n.stopwatch,
           style: Theme.of(context).textTheme.headlineMedium,
         ),
       ),
@@ -85,7 +87,7 @@ class StopwatchScreen extends StatelessWidget {
                         child: Row(
                           children: [
                             Text(
-                              'Lap ${lap.lapNumber}',
+                              l10n.lap_number(lap.lapNumber),
                               style: const TextStyle(
                                 fontSize: 20,
                                 color: Color(0xFFADADAD),
@@ -121,8 +123,8 @@ class StopwatchScreen extends StatelessWidget {
                     // Lap / Reset button
                     _StopwatchButton(
                       label: state.status == StopwatchStatus.stopped
-                          ? 'Reset'
-                          : 'Lap',
+                          ? l10n.reset
+                          : l10n.lap,
                       enabled: state.status != StopwatchStatus.initial,
                       onTap: () {
                         if (state.status == StopwatchStatus.stopped) {
@@ -135,8 +137,8 @@ class StopwatchScreen extends StatelessWidget {
                     // Start / Stop button
                     _StopwatchButton(
                       label: state.status == StopwatchStatus.running
-                          ? 'Stop'
-                          : 'Start',
+                          ? l10n.stop
+                          : l10n.start,
                       enabled: true,
                       onTap: () {
                         if (state.status == StopwatchStatus.running) {
