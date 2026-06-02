@@ -94,35 +94,209 @@ abstract class AppLocalizations {
   /// A list of this localizations delegate's supported locales.
   static const List<Locale> supportedLocales = <Locale>[Locale('en')];
 
-  /// No description provided for @alarms.
+  /// Title for the alarms screen
   ///
   /// In en, this message translates to:
   /// **'Alarms'**
   String get alarms;
 
-  /// No description provided for @stopwatch.
+  /// Title for the stopwatch screen
   ///
   /// In en, this message translates to:
   /// **'Stopwatch'**
   String get stopwatch;
 
-  /// No description provided for @lap.
+  /// Button text to record a stopwatch lap
   ///
   /// In en, this message translates to:
   /// **'Lap'**
   String get lap;
 
-  /// No description provided for @reset.
+  /// Button text to reset the stopwatch
   ///
   /// In en, this message translates to:
   /// **'Reset'**
   String get reset;
 
-  /// No description provided for @mechanix_clock.
+  /// Application name
   ///
   /// In en, this message translates to:
   /// **'Mechanix Clock'**
   String get mechanix_clock;
+
+  /// Title for editing alarms
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Alarms'**
+  String get edit_alarms;
+
+  /// Message displayed when there are no alarms
+  ///
+  /// In en, this message translates to:
+  /// **'No Alarms'**
+  String get no_alarms;
+
+  /// Label indicating an alarm repeats only once
+  ///
+  /// In en, this message translates to:
+  /// **'Once'**
+  String get once;
+
+  /// Ante meridiem time indicator
+  ///
+  /// In en, this message translates to:
+  /// **'AM'**
+  String get am;
+
+  /// Post meridiem time indicator
+  ///
+  /// In en, this message translates to:
+  /// **'PM'**
+  String get pm;
+
+  /// Title for creating a new alarm
+  ///
+  /// In en, this message translates to:
+  /// **'Set alarm'**
+  String get set_alarm;
+
+  /// Title for editing an existing alarm
+  ///
+  /// In en, this message translates to:
+  /// **'Edit alarm'**
+  String get edit_alarm;
+
+  /// Label for alarm repeat settings
+  ///
+  /// In en, this message translates to:
+  /// **'Repeat'**
+  String get repeat;
+
+  /// Label for alarm sound selection
+  ///
+  /// In en, this message translates to:
+  /// **'Sound'**
+  String get sound;
+
+  /// Label for alarm snooze setting
+  ///
+  /// In en, this message translates to:
+  /// **'Snooze'**
+  String get snooze;
+
+  /// Full name of Monday
+  ///
+  /// In en, this message translates to:
+  /// **'Monday'**
+  String get monday;
+
+  /// Full name of Tuesday
+  ///
+  /// In en, this message translates to:
+  /// **'Tuesday'**
+  String get tuesday;
+
+  /// Full name of Wednesday
+  ///
+  /// In en, this message translates to:
+  /// **'Wednesday'**
+  String get wednesday;
+
+  /// Full name of Thursday
+  ///
+  /// In en, this message translates to:
+  /// **'Thursday'**
+  String get thursday;
+
+  /// Full name of Friday
+  ///
+  /// In en, this message translates to:
+  /// **'Friday'**
+  String get friday;
+
+  /// Full name of Saturday
+  ///
+  /// In en, this message translates to:
+  /// **'Saturday'**
+  String get saturday;
+
+  /// Full name of Sunday
+  ///
+  /// In en, this message translates to:
+  /// **'Sunday'**
+  String get sunday;
+
+  /// Abbreviated label for Monday
+  ///
+  /// In en, this message translates to:
+  /// **'M'**
+  String get monday_abbr;
+
+  /// Abbreviated label for Tuesday
+  ///
+  /// In en, this message translates to:
+  /// **'T'**
+  String get tuesday_abbr;
+
+  /// Abbreviated label for Wednesday
+  ///
+  /// In en, this message translates to:
+  /// **'W'**
+  String get wednesday_abbr;
+
+  /// Abbreviated label for Thursday
+  ///
+  /// In en, this message translates to:
+  /// **'T'**
+  String get thursday_abbr;
+
+  /// Abbreviated label for Friday
+  ///
+  /// In en, this message translates to:
+  /// **'F'**
+  String get friday_abbr;
+
+  /// Abbreviated label for Saturday
+  ///
+  /// In en, this message translates to:
+  /// **'S'**
+  String get saturday_abbr;
+
+  /// Abbreviated label for Sunday
+  ///
+  /// In en, this message translates to:
+  /// **'S'**
+  String get sunday_abbr;
+
+  /// Label for a stopwatch lap with its sequence number
+  ///
+  /// In en, this message translates to:
+  /// **'Lap {number}'**
+  String lap_number(int number);
+
+  /// Button text to stop the stopwatch
+  ///
+  /// In en, this message translates to:
+  /// **'Stop'**
+  String get stop;
+
+  /// Button text to start the stopwatch
+  ///
+  /// In en, this message translates to:
+  /// **'Start'**
+  String get start;
+
+  /// Placeholder message indicating the timer feature is not yet available
+  ///
+  /// In en, this message translates to:
+  /// **'Timer - Coming Soon'**
+  String get timer_coming_soon;
+
+  /// Placeholder message indicating the world clock feature is not yet available
+  ///
+  /// In en, this message translates to:
+  /// **'World Clock - Coming Soon'**
+  String get world_clock_coming_soon;
 }
 
 class _AppLocalizationsDelegate

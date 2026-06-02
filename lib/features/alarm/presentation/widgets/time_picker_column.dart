@@ -54,6 +54,7 @@ class PickerColumnState extends State<PickerColumn> {
             scrollController: _controller,
             selectionOverlay: const SizedBox.shrink(),
             squeeze: 1.0,
+            diameterRatio: 200,
             looping: true,
             onSelectedItemChanged: (index) {
               _selectedIndex.value =
