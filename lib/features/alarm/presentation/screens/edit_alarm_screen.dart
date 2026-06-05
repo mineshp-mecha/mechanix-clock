@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mechanix_clock/core/theme/app_theme.dart';
-import 'package:mechanix_clock/features/alarm/bloc/alarm_bloc.dart';
-import 'package:mechanix_clock/features/alarm/bloc/alarm_event.dart';
+import 'package:mechanix_clock/core/utils/helper.dart';
 import 'package:mechanix_clock/features/alarm/data/models/alarm_model.dart';
 import 'package:mechanix_clock/features/alarm/presentation/screens/sound_selection_screen.dart';
-import 'package:mechanix_clock/features/alarm/presentation/widgets/am_pm_picker.dart';
-import 'package:mechanix_clock/features/alarm/presentation/widgets/time_picker_column.dart';
+import 'package:mechanix_clock/features/alarm/presentation/widgets/edit_alarm_bottom_bar.dart';
+import 'package:mechanix_clock/features/alarm/presentation/widgets/time_picker.dart';
 import 'package:mechanix_clock/l10n/app_localizations.dart';
 
 import '../widgets/custom_switch.dart';
@@ -49,15 +47,7 @@ class _EditAlarmScreenState extends State<EditAlarmScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final List<String> dayAbbrs = [
-      l10n.monday_abbr,
-      l10n.tuesday_abbr,
-      l10n.wednesday_abbr,
-      l10n.thursday_abbr,
-      l10n.friday_abbr,
-      l10n.saturday_abbr,
-      l10n.sunday_abbr,
-    ];
+    final dayAbbrs = context.dayAbbrs;
 
     return Scaffold(
       appBar: AppBar(
@@ -75,7 +65,14 @@ class _EditAlarmScreenState extends State<EditAlarmScreen> {
       body: Column(
         children: [
           const SizedBox(height: 20),
-          _buildTimePicker(),
+          CustomTimePicker(
+            selectedHour: _selectedHour,
+            selectedMinute: _selectedMinute,
+            isAm: _isAm,
+            onHourChanged: (v) => setState(() => _selectedHour = v),
+            onMinuteChanged: (v) => setState(() => _selectedMinute = v),
+            onAmPmChanged: (v) => setState(() => _isAm = v),
+          ),
           const SizedBox(height: 40),
           _buildOptionRow(
             l10n.repeat,
@@ -116,35 +113,15 @@ class _EditAlarmScreenState extends State<EditAlarmScreen> {
             onChanged: (v) => _isSnoozeEnabled = v,
           ),
           const Spacer(),
-          _buildBottomBar(),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildTimePicker() {
-    return SizedBox(
-      height: 220,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          PickerColumn(
-            itemCount: 12,
-            initialValue: _selectedHour,
-            isHour: true,
-            width: 150,
-            onChanged: (v) => _selectedHour = v,
+          AlarmBottomBar(
+            alarm: widget.alarm,
+            selectedHour: _selectedHour,
+            selectedMinute: _selectedMinute,
+            isAm: _isAm,
+            repeatDays: _repeatDays,
+            sound: _sound,
+            isSnoozeEnabled: _isSnoozeEnabled,
           ),
-          const SizedBox(width: 10),
-          PickerColumn(
-            itemCount: 60,
-            initialValue: _selectedMinute,
-            isHour: false,
-            width: 139,
-            onChanged: (v) => _selectedMinute = v,
-          ),
-          const SizedBox(width: 10),
-          AmPmPicker(initialIsAm: _isAm, onChanged: (v) => _isAm = v),
         ],
       ),
     );
@@ -188,56 +165,6 @@ class _EditAlarmScreenState extends State<EditAlarmScreen> {
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _buildBottomBar() {
-    return Container(
-      height: 60,
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      decoration: const BoxDecoration(
-        color: AppColors.surface,
-        border: Border(top: BorderSide(color: AppColors.border, width: 0.5)),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          if (widget.alarm != null)
-            IconButton(
-              key: const Key('delete_alarm_button'),
-              icon: const Icon(Icons.delete_outline, color: AppColors.textDim),
-              onPressed: () {
-                context.read<AlarmBloc>().add(DeleteAlarm(widget.alarm!.id));
-                Navigator.pop(context);
-              },
-            )
-          else
-            const SizedBox(width: 44),
-          IconButton(
-            key: const Key('save_alarm_button'),
-            icon: const Icon(Icons.check, color: AppColors.textPrimary),
-            onPressed: () {
-              final alarm = Alarm(
-                id:
-                    widget.alarm?.id ??
-                    DateTime.now().millisecondsSinceEpoch.toString(),
-                hour: _selectedHour,
-                minute: _selectedMinute,
-                isAm: _isAm,
-                repeatDays: _repeatDays,
-                sound: _sound,
-                isSnoozeEnabled: _isSnoozeEnabled,
-              );
-              if (widget.alarm == null) {
-                context.read<AlarmBloc>().add(AddAlarm(alarm));
-              } else {
-                context.read<AlarmBloc>().add(UpdateAlarm(alarm));
-              }
-              Navigator.pop(context);
-            },
-          ),
-        ],
       ),
     );
   }

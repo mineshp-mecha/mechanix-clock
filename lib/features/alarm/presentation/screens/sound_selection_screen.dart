@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mechanix_clock/core/theme/app_theme.dart';
+import 'package:mechanix_clock/core/utils/constants.dart';
 import 'package:mechanix_clock/l10n/app_localizations.dart';
 
 class SoundSelectionScreen extends StatefulWidget {
@@ -12,15 +13,6 @@ class SoundSelectionScreen extends StatefulWidget {
 
 class _SoundSelectionScreenState extends State<SoundSelectionScreen> {
   late final ValueNotifier<String> _selectedSound;
-
-  static const List<String> _sounds = [
-    'Wakeup',
-    'Siren',
-    'Chasing Stars - Beyond the Horizon',
-    'Dancing Flames (Urban Pulse)',
-    'Silent Echo - Reflections of Time (Time mus...)',
-    'Lost in Dreams - The Sound of Silence',
-  ];
 
   @override
   void initState() {
@@ -46,10 +38,10 @@ class _SoundSelectionScreenState extends State<SoundSelectionScreen> {
         ),
       ),
       body: ListView.builder(
-        itemCount: _sounds.length,
+        itemCount: sounds.length,
         itemBuilder: (context, index) => _SoundTile(
-          key: Key('sound_${_sounds[index]}'),
-          sound: _sounds[index],
+          key: Key('sound_${sounds[index]}'),
+          sound: sounds[index],
           selectedNotifier: _selectedSound,
         ),
       ),

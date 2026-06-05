@@ -208,7 +208,7 @@ class _StopwatchButton extends StatelessWidget {
           border: Border.all(
             color: enabled
                 ? const Color(0xFF474747)
-                : const Color(0xFF474747).withOpacity(0.4),
+                : const Color(0xFF474747).withValues(alpha: 0.5),
             width: 1,
           ),
         ),
@@ -219,7 +219,7 @@ class _StopwatchButton extends StatelessWidget {
             height: 1.2,
             color: enabled
                 ? const Color(0xFFADADAD)
-                : const Color(0xFFADADAD).withOpacity(0.4),
+                : const Color(0xFFADADAD).withValues(alpha: 0.5),
           ),
         ),
       ),

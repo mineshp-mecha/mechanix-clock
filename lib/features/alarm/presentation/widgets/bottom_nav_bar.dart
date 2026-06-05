@@ -22,19 +22,48 @@ class BottomNavBar extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          _buildNavItem(0, Icons.alarm_outlined),
-          _buildNavItem(1, Icons.timer_outlined),
-          _buildNavItem(2, Icons.hourglass_empty_outlined),
-          _buildNavItem(3, Icons.public_outlined),
+          NavItem(
+            icon: Icons.alarm_outlined,
+            isSelected: currentIndex == 0,
+            onTap: () => onTap(0),
+          ),
+          NavItem(
+            icon: Icons.timer_outlined,
+            isSelected: currentIndex == 1,
+            onTap: () => onTap(1),
+          ),
+          NavItem(
+            icon: Icons.hourglass_empty_outlined,
+            isSelected: currentIndex == 2,
+            onTap: () => onTap(2),
+          ),
+          NavItem(
+            icon: Icons.public_outlined,
+            isSelected: currentIndex == 3,
+            onTap: () => onTap(3),
+          ),
         ],
       ),
     );
   }
+}
 
-  Widget _buildNavItem(int index, IconData icon) {
-    final bool isSelected = currentIndex == index;
+class NavItem extends StatelessWidget {
+  final IconData icon;
+  final bool isSelected;
+  final VoidCallback onTap;
+
+  const NavItem({
+    super.key,
+    required this.icon,
+    required this.isSelected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => onTap(index),
+      onTap: onTap,
       child: Container(
         width: 44,
         height: 44,
@@ -46,7 +75,7 @@ class BottomNavBar extends StatelessWidget {
           icon,
           color: isSelected
               ? AppColors.textPrimary
-              : AppColors.textPrimary.withValues(alpha: (0.5)),
+              : AppColors.textPrimary.withValues(alpha: 0.5),
         ),
       ),
     );

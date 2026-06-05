@@ -83,7 +83,7 @@ class PickerColumnState extends State<PickerColumn> {
             }),
           ),
           Positioned(
-            top: (220 - 87) / 2,
+            top: 66.5,
             left: 0,
             right: 0,
             child: IgnorePointer(

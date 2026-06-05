@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mechanix_clock/core/theme/app_theme.dart';
+import 'package:mechanix_clock/core/utils/helper.dart';
 import 'package:mechanix_clock/features/alarm/bloc/alarm_bloc.dart';
 import 'package:mechanix_clock/features/alarm/bloc/alarm_event.dart';
 import 'package:mechanix_clock/features/alarm/bloc/alarm_state.dart';
@@ -110,16 +111,7 @@ class _AlarmItem extends StatelessWidget {
         ? AppColors.textPrimary
         : AppColors.textGrey;
 
-    final List<String> dayAbbrs = [
-      l10n.monday_abbr,
-      l10n.tuesday_abbr,
-      l10n.wednesday_abbr,
-      l10n.thursday_abbr,
-      l10n.friday_abbr,
-      l10n.saturday_abbr,
-      l10n.sunday_abbr,
-    ];
-
+    final dayAbbrs = context.dayAbbrs;
     return InkWell(
       onTap: () {
         context.read<AlarmBloc>().add(DeleteAlarm(alarm.id));

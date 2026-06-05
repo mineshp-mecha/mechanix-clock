@@ -26,6 +26,7 @@ class AlarmBloc extends Bloc<AlarmEvent, AlarmState> {
       final alarms = await repository.getAlarms();
       emit(AlarmLoaded(alarms));
     } catch (e) {
+      AppLogger.e('Failed to load alarms: $e');
       emit(const AlarmError('Failed to load alarms'));
     }
   }
@@ -55,15 +56,17 @@ class AlarmBloc extends Bloc<AlarmEvent, AlarmState> {
       final updatedAlarms = currentAlarms.map((a) {
         return a.id == event.alarm.id ? event.alarm : a;
       }).toList();
-      await repository.saveAlarms(updatedAlarms);
-
-      if (event.alarm.isActive) {
-        await _scheduleSystemAlarm(event.alarm);
-      } else {
-        await systemAlarmService.cancelAlarm(event.alarm.id);
+      try {
+        await repository.saveAlarms(updatedAlarms);
+        if (event.alarm.isActive) {
+          await _scheduleSystemAlarm(event.alarm);
+        } else {
+          await systemAlarmService.cancelAlarm(event.alarm.id);
+        }
+        emit(AlarmLoaded(updatedAlarms));
+      } catch (e) {
+        AppLogger.e('Failed to save alarms: $e');
       }
-
-      emit(AlarmLoaded(updatedAlarms));
     }
   }
 
