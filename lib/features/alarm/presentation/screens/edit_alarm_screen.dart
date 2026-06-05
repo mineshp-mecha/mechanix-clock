@@ -78,7 +78,7 @@ class _EditAlarmScreenState extends State<EditAlarmScreen> {
           _buildTimePicker(),
           const SizedBox(height: 40),
           _buildOptionRow(
-            'Repeat',
+            l10n.repeat,
             _repeatDays.isEmpty
                 ? 'Once'
                 : _repeatDays.map((d) => dayAbbrs[d]).join(' '),
@@ -96,7 +96,7 @@ class _EditAlarmScreenState extends State<EditAlarmScreen> {
             },
           ),
           _buildOptionRow(
-            'Sound',
+            l10n.sound,
             _sound,
             onTap: () async {
               final result = await Navigator.push<String>(
