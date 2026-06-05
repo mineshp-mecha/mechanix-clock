@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mechanix_clock/core/utils/app_logger.dart';
 import 'alarm_event.dart';
 import 'alarm_state.dart';
 import '../data/models/alarm_model.dart';
@@ -9,11 +10,9 @@ class AlarmBloc extends Bloc<AlarmEvent, AlarmState> {
   final AlarmRepository repository;
   final SystemAlarmService systemAlarmService;
 
-  AlarmBloc({
-    required this.repository,
-    SystemAlarmService? systemAlarmService,
-  })  : systemAlarmService = systemAlarmService ?? SystemAlarmService(),
-        super(AlarmInitial()) {
+  AlarmBloc({required this.repository, SystemAlarmService? systemAlarmService})
+    : systemAlarmService = systemAlarmService ?? SystemAlarmService(),
+      super(AlarmInitial()) {
     on<LoadAlarms>(_onLoadAlarms);
     on<AddAlarm>(_onAddAlarm);
     on<UpdateAlarm>(_onUpdateAlarm);
@@ -25,7 +24,6 @@ class AlarmBloc extends Bloc<AlarmEvent, AlarmState> {
     emit(AlarmLoading());
     try {
       final alarms = await repository.getAlarms();
-      print("alarms: $alarms");
       emit(AlarmLoaded(alarms));
     } catch (e) {
       emit(const AlarmError('Failed to load alarms'));
@@ -43,7 +41,7 @@ class AlarmBloc extends Bloc<AlarmEvent, AlarmState> {
         }
         emit(AlarmLoaded(updatedAlarms));
       } catch (e) {
-        print('Failed to save alarms: $e');
+        AppLogger.e('Failed to save alarms: $e');
       }
     }
   }

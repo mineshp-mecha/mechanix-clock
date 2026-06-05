@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:mechanix_clock/core/utils/app_logger.dart';
 import 'package:shared_preferences/shared_preferences.dart'; // Use standard import
 import '../models/alarm_model.dart';
 
@@ -22,7 +23,7 @@ class AlarmRepository {
       final List<dynamic> decoded = jsonDecode(alarmsJson);
       return decoded.map((item) => Alarm.fromJson(item)).toList();
     } catch (e) {
-      print('Failed to load alarms: $e');
+      AppLogger.e('Failed to load alarms: $e');
       return [];
     }
   }
@@ -36,12 +37,12 @@ class AlarmRepository {
       bool success = await prefs.setString(_storageKey, encoded);
 
       if (success) {
-        print('on_save: Successfully saved encoded data');
+        AppLogger.i('on_save: Successfully saved encoded data');
       } else {
-        print('on_save: Failed to write to disk');
+        AppLogger.e('on_save: Failed to write to disk');
       }
     } catch (e) {
-      print('Failed to save alarms: $e');
+      AppLogger.e('Failed to save alarms: $e');
     }
   }
 }

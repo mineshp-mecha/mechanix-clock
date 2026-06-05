@@ -1,4 +1,5 @@
 import 'package:flutter/services.dart';
+import 'package:mechanix_clock/core/utils/app_logger.dart';
 
 class SystemAlarmService {
   static const _channel = MethodChannel('com.example.clock/alarm');
@@ -17,18 +18,18 @@ class SystemAlarmService {
         'repeatDays': repeatDays,
         'isSnoozeEnabled': isSnoozeEnabled,
       });
-      print('SystemAlarmService: Alarm set for $time (ID: $id)');
+      AppLogger.i('SystemAlarmService: Alarm set for $time (ID: $id)');
     } on PlatformException catch (e) {
-      print("Failed to set alarm: ${e.message}");
+      AppLogger.e('Failed to set alarm: $e');
     }
   }
 
   Future<void> cancelAlarm(String id) async {
     try {
       await _channel.invokeMethod('cancelAlarm', {'id': id});
-      print('SystemAlarmService: Alarm cancelled (ID: $id)');
+      AppLogger.i('SystemAlarmService: Alarm cancelled (ID: $id)');
     } on PlatformException catch (e) {
-      print("Failed to cancel alarm: ${e.message}");
+      AppLogger.e('Failed to cancel alarm: $e');
     }
   }
 }
